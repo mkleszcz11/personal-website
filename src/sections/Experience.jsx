@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { professional, education, courses } from '../data/experience'
 
 const TABS = [
@@ -6,6 +6,13 @@ const TABS = [
   { label: 'Education', key: 'education' },
   { label: 'Extracurricular', key: 'courses' },
 ]
+
+const HASH_TO_TAB = {
+  'experience-professional': 'professional',
+  'experience-education': 'education',
+  'experience-extracurricular': 'courses',
+}
+const TAB_TO_HASH = Object.fromEntries(Object.entries(HASH_TO_TAB).map(([h, t]) => [t, h]))
 
 function TimelineEntry({ item, isCourse }) {
   return (
@@ -62,11 +69,22 @@ function TimelineEntry({ item, isCourse }) {
 }
 
 export default function Experience() {
-  const [activeTab, setActiveTab] = useState('professional')
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.slice(1)
+    return HASH_TO_TAB[hash] ?? 'professional'
+  })
   const [fading, setFading] = useState(false)
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1)
+    if (HASH_TO_TAB[hash]) {
+      document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [])
 
   const switchTab = (key) => {
     if (key === activeTab) return
+    history.replaceState(null, '', `#${TAB_TO_HASH[key]}`)
     setFading(true)
     setTimeout(() => {
       setActiveTab(key)

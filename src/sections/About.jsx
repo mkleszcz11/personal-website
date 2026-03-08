@@ -44,6 +44,7 @@ export default function About() {
             <img
               src="/images/avatar.jpg"
               alt={config.name}
+              fetchpriority="high"
               onError={(e) => {
                 e.target.src = 'https://placehold.co/320x320/E1E1E1/767171?text=Photo'
               }}

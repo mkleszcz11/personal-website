@@ -5,15 +5,15 @@ export const projects = [
     shortDescription:
       "Master's thesis - end-to-end pick-and-place system with custom path planning and real-time object tracking on a moving conveyor belt.",
     what: {
-      photo: "/images/projects/pick-and-place/what.png",
+      photo: "/images/projects/pick-and-place/what.jpg",
       text: "End-to-end robotic pick-and-place system focused on path and motion planning. The robot detects, tracks, and grasps everyday objects on a moving conveyor belt while accounting for obstacles in the workspace. Custom implementations were compared against MoveIt! to evaluate trade-offs in performance and flexibility.",
     },
     how: {
-      photo: "/images/projects/pick-and-place/how.png",
+      photo: "/images/projects/pick-and-place/how.jpg",
       text: "Path planning using RRT, RRT*, PRM, and RRT-Connect. ROS-based control of a 7-DOF manipulator with TRAC-IK for goal sampling and quintic spline trajectories for smooth motion. Object detection via YOLO segmentation with an Intel RealSense depth camera, and an asynchronous Kalman filter for predictive tracking of moving targets.",
     },
     result: {
-      photo: "/images/projects/pick-and-place/result.png",
+      photo: "/images/projects/pick-and-place/result.jpg",
       text: "Successfully executed pick-and-place in both static and dynamic environments. The full pipeline (planning, vision, and grasping) was built from scratch. The thesis earned the highest possible grade and now serves as the foundation for future research in the lab.",
     },
     links: [
@@ -117,7 +117,7 @@ export const projects = [
       text: "Two approaches were implemented and compared: classical computer vision and a Convolutional Neural Network (CNN). Both were tested and validated in a simulation environment that we also developed ourselves.",
     },
     result: {
-      photo: "/images/projects/tolerance-tracing/result.png",
+      photo: "/images/projects/tolerance-tracing/result.jpg",
       text: "The presentation was well received by the Danfoss team and sparked a genuine discussion about applicability in production. A rare chance to work directly with industry specialists on a current, real-world factory challenge.",
     },
     links: [

@@ -19,6 +19,11 @@ export default function Nav({ darkMode, toggleDark }) {
     const sections = config.navLinks.map((link) => link.toLowerCase())
 
     const handleScroll = () => {
+      const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 10
+      if (atBottom) {
+        setActiveSection(sections[sections.length - 1])
+        return
+      }
       const threshold = window.scrollY + window.innerHeight * 0.35
       let active = sections[0]
       for (const id of sections) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { ExternalLink, ChevronLeft, ChevronRight, ChevronDown, X } from 'lucide-react'
 import { projects, otherProjects } from '../data/projects'
 
@@ -20,9 +20,11 @@ for (const path of Object.keys(_otherGlob)) {
   otherImagesByDir[dir].push(url)
 }
 
-// Auto-discover cover.gif / cover.png for main project cards.
-// Drop either file into the project's image folder — no data changes needed.
+// Auto-discover cover.mp4 / cover.gif / cover.png for main project cards.
+// Drop any of these into the project's image folder — no data changes needed.
+// Priority: mp4 > gif > png
 const _coverGlob = import.meta.glob([
+  '/public/images/projects/*/cover.mp4',
   '/public/images/projects/*/cover.gif',
   '/public/images/projects/*/cover.png',
 ])
@@ -30,8 +32,9 @@ const projectCoverByDir = {}
 for (const path of Object.keys(_coverGlob)) {
   const url = path.replace('/public', '')
   const dir = url.split('/').slice(0, -1).join('/')
-  // gif wins over png if both exist
-  if (!projectCoverByDir[dir] || url.endsWith('.gif')) projectCoverByDir[dir] = url
+  const existing = projectCoverByDir[dir]
+  const rank = (u) => u.endsWith('.mp4') ? 2 : u.endsWith('.gif') ? 1 : 0
+  if (!existing || rank(url) > rank(existing)) projectCoverByDir[dir] = url
 }
 
 function getProjectCover(project) {
@@ -55,6 +58,50 @@ function useColumns() {
     return () => window.removeEventListener('resize', update)
   }, [])
   return cols
+}
+
+function CoverMedia({ src, alt, className, style, lazy }) {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {})
+        } else {
+          video.pause()
+        }
+      },
+      { threshold: 0.1 }
+    )
+    observer.observe(video)
+    return () => observer.disconnect()
+  }, [])
+
+  if (src && src.endsWith('.mp4')) {
+    return (
+      <video
+        ref={videoRef}
+        src={src}
+        loop
+        muted
+        playsInline
+        className={className}
+        style={style}
+      />
+    )
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      loading={lazy ? 'lazy' : undefined}
+    />
+  )
 }
 
 function Lightbox({ src, alt, onClose }) {
@@ -89,7 +136,7 @@ function Lightbox({ src, alt, onClose }) {
   )
 }
 
-function ProjectCard({ project, isActive, onClick }) {
+function ProjectCard({ project, isActive, onClick, lazy }) {
   const cover = getProjectCover(project)
   return (
     <div
@@ -106,18 +153,20 @@ function ProjectCard({ project, isActive, onClick }) {
         </h3>
         {cover && (project.coverCrop === false ? (
           <div className="h-48 flex justify-center">
-            <img
+            <CoverMedia
               src={cover}
               alt={project.title}
               className="h-full w-auto rounded-xl"
+              lazy={lazy}
             />
           </div>
         ) : (
-          <img
+          <CoverMedia
             src={cover}
             alt={project.title}
             className="w-full h-48 object-cover rounded-xl"
             style={{ backgroundColor: 'var(--color-surface)' }}
+            lazy={lazy}
           />
         ))}
         {project.isOther && (
@@ -175,6 +224,7 @@ function ExpansionPanel({ project, onImageClick }) {
                   alt={key}
                   className="rounded-xl"
                   style={{ maxHeight: '200px', maxWidth: '300px', objectFit: 'contain' }}
+                  loading="lazy"
                 />
               </div>
               <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-primary)', maxWidth: '300px' }}>
@@ -223,8 +273,10 @@ function OtherProjectRow({ project, onImageClick }) {
   const images = otherImagesByDir[project.imageDir] || []
   const [imgIndex, setImgIndex] = useState(0)
   const [prevIndex, setPrevIndex] = useState(null)
+  const [direction, setDirection] = useState('next')
 
-  const goTo = useCallback((newIndex) => {
+  const goTo = useCallback((newIndex, dir = 'next') => {
+    setDirection(dir)
     setPrevIndex((prev) => (prev !== null ? prev : imgIndex))
     setImgIndex(newIndex)
   }, [imgIndex])
@@ -238,19 +290,19 @@ function OtherProjectRow({ project, onImageClick }) {
   useEffect(() => {
     if (images.length <= 1) return
     const interval = setInterval(() => {
-      goTo((imgIndex + 1) % images.length)
+      goTo((imgIndex + 1) % images.length, 'next')
     }, 4000)
     return () => clearInterval(interval)
   }, [images.length, imgIndex, goTo])
 
   const handlePrev = (e) => {
     e.stopPropagation()
-    goTo((imgIndex - 1 + images.length) % images.length)
+    goTo((imgIndex - 1 + images.length) % images.length, 'prev')
   }
 
   const handleNext = (e) => {
     e.stopPropagation()
-    goTo((imgIndex + 1) % images.length)
+    goTo((imgIndex + 1) % images.length, 'next')
   }
 
   return (
@@ -273,7 +325,7 @@ function OtherProjectRow({ project, onImageClick }) {
                 className="absolute inset-0 w-full h-full"
                 style={{
                   objectFit: 'cover',
-                  animation: 'slide-out-to-left 0.32s ease forwards',
+                  animation: `${direction === 'next' ? 'slide-out-to-left' : 'slide-out-to-right'} 0.32s ease forwards`,
                 }}
               />
             )}
@@ -284,7 +336,7 @@ function OtherProjectRow({ project, onImageClick }) {
               className="absolute inset-0 w-full h-full cursor-zoom-in"
               style={{
                 objectFit: 'cover',
-                animation: prevIndex !== null ? 'slide-in-from-right 0.32s ease forwards' : undefined,
+                animation: prevIndex !== null ? `${direction === 'next' ? 'slide-in-from-right' : 'slide-in-from-left'} 0.32s ease forwards` : undefined,
               }}
               onClick={() => onImageClick(images[imgIndex], project.title)}
             />
@@ -431,6 +483,7 @@ export default function Projects() {
                         project={project}
                         isActive={activeIndex === globalIndex}
                         onClick={() => handleClick(globalIndex)}
+                        lazy={globalIndex >= 3}
                       />
                     )
                   })}
