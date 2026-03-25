@@ -1,7 +1,7 @@
 export const config = {
   name: "Marcin Kleszcz",
   navLinks: ["About", "Experience", "Projects", "Skills", "Contact"],
-  cvUrl: "/resume_Marcin_Kleszcz.pdf",
+  cvUrl: "/Marcin_Kleszcz_resume.pdf",
   linkedin: "https://linkedin.com/in/kleszcz-m",
   email: "marcin.kleszcz.00@gmail.com",
   aboutBio: [
