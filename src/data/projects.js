@@ -44,6 +44,24 @@ export const projects = [
     ],
   },
   {
+    title: "Reward Shaping for Manipulation",
+    photo: "",
+    shortDescription:
+      "Comparing reward formulations for a pick-and-place task using Soft Actor-Critic with Hindsight Experience Replay.",
+    what: {
+      photo: "/images/projects/reward-shaping/what.png",
+      text: "Part of a broader deep dive into RL for manipulation. Used a pick-and-place task as a testbed to compare reward formulations and understand how SAC with HER works in practice.",
+    },
+    how: {
+      photo: "/images/projects/reward-shaping/how.png",
+      text: "Three reward setups - sparse, dense, and staged - trained using SAC+HER in Stable-Baselines3, with MuJoCo and gymnasium-robotics. Potential-based shaping was partially explored but ran into environment constraints with HER relabeling.",
+    },
+    result: {
+      photo: "/images/projects/reward-shaping/result.png",
+      text: "Sparse and dense both settled around 15% - the policy learned to slide the block rather than grasp it, which accidentally works for on-table goals. Staged reward reached 85% at 1M steps and above 95% after resuming with adjusted hyperparameters.",
+    },
+  },
+  {
     title: "NNE/DTU RoboTech Challenge",
     photo: "",
     shortDescription:
