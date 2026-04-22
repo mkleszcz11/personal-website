@@ -83,7 +83,7 @@ export const skills = [
       },
       {
         name: "Networking & Protocols Basics",
-        context: "Used OPC UA and MQTT at Meili Robots for robot integration. At Nordic Semiconductor, worked with BLE, Bluetooth, Wi-Fi, and Thread. Enjoy building small IoT projects - have used LoRa for sensor networks.",
+        context: "Used OPC UA and MQTT at Meili Robots for robot integration. At Nordic Semiconductor, worked with BLE, Bluetooth, Wi-Fi, and Thread. Worked with CAN bus on a Formula Student EV. Also used LoRa for small IoT projects.",
       },
     ],
   },
