@@ -138,12 +138,22 @@ function Lightbox({ src, alt, onClose }) {
 
 function ProjectCard({ project, isActive, onClick, lazy }) {
   const cover = getProjectCover(project)
+  const [hovered, setHovered] = useState(false)
   return (
     <div
       onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       className="rounded-2xl cursor-pointer transition-all duration-200"
       style={{
-        border: isActive ? '1px solid var(--color-text-primary)' : '1px solid var(--color-border)',
+        border: isActive
+          ? '1px solid var(--color-text-primary)'
+          : '1px solid var(--color-border)',
+        boxShadow: isActive
+          ? '0 0 0 1px var(--color-text-primary)'
+          : hovered
+          ? '0 0 0 1px var(--color-text-secondary)'
+          : 'none',
         backgroundColor: isActive ? 'var(--color-surface)' : 'var(--color-background)',
       }}
     >
