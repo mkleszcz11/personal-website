@@ -44,6 +44,39 @@ export const projects = [
     ],
   },
   {
+    title: "Quadruped Locomotion RL",
+    coverDir: "/images/projects/spot-rl",
+    shortDescription:
+      "Teacher-student policy for Spot - trained in MJX, broke in MuJoCo CPU, fixed after actuator-residual failed to close the gap.",
+    isNarrative: true,
+    sections: [
+      {
+        heading: "Goal",
+        text: "Build a teacher-student locomotion stack for Boston Dynamics Spot, deploy the proprioception-only student across simulators, quantify and try to close the sim-to-sim gap. A hands-on introduction to massively parallel GPU RL (MJX), teacher-student distillation, and sim-to-sim evaluation.",
+      },
+      {
+        heading: "Summary",
+        text: "Trained a Brax PPO teacher policy in MJX on a rough terrain locomotion task using scandots. The teacher was then distilled into a proprio-only student via DAgger. Evaluation on MuJoCo CPU revealed a 41-percentage-point survival drop. An Hwangbo-style actuator-residual network (2019) [arXiv:1901.08652] (the originally planned fix) failed to close the gap - it originates inside the contact solver, not in actuator dynamics. The working fix was physics-level domain randomization on contact stiffness during teacher retraining. The new student survives 89% of CPU rollouts versus 100% on MJX, within the 15 pp / 0.2 m/s budget set at the start.",
+      },
+      {
+        video: "/images/projects/spot-rl/comparison_full_compressed.mp4",
+      },
+      {
+        heading: "Teacher-Student Pipeline",
+        image: "/images/projects/spot-rl/teacher_student_diagram.jpg",
+      },
+      {
+        twoColumn: [
+          { heading: "Control Step", image: "/images/projects/spot-rl/one_step_diagram.jpg" },
+          { heading: "Survival Rate", image: "/images/projects/spot-rl/results_bar_plot.jpg" },
+        ],
+      },
+    ],
+    links: [
+      { label: "Step-by-step report on GitHub", url: "https://github.com/mkleszcz11/legged_rl_sim2sim" },
+    ],
+  },
+  {
     title: "Reward Shaping for Manipulation",
     photo: "",
     shortDescription:
@@ -117,9 +150,9 @@ export const projects = [
       photo: "/images/projects/electric-skateboard/result.jpeg",
       text: "Does exactly what it was built for - cuts my commute to university to about a third of the time on foot. Top speed: 52 km/h. Range: 22 km.",
     },
-    links: [
-      { label: "Full project description", url: "https://electric-skateboard.builders/t/first-build-giving-my-old-mountainboard-a-second-life-custom-motor-mounts-3d-printed-wheel-pulleys-flipsky-dual-fsesc-6-6-dual-6374-190kv-10s5p-under-1000/116329" },
-    ],
+    // links: [
+    //   { label: "Full project description", url: "https://electric-skateboard.builders/t/first-build-giving-my-old-mountainboard-a-second-life-custom-motor-mounts-3d-printed-wheel-pulleys-flipsky-dual-fsesc-6-6-dual-6374-190kv-10s5p-under-1000/116329" },
+    // ],
   },
   {
     title: "Tolerance Tracing and Compensation",
@@ -144,24 +177,6 @@ export const projects = [
     ],
   },
   {
-    title: "Desktop Robotic Arm",
-    photo: "",
-    shortDescription:
-      "5-axis manipulator built from scratch - fully 3D-printed, Arduino-controlled, with forward and inverse kinematics.",
-    what: {
-      photo: "/images/projects/desktop-arm/what.png",
-      text: "A personal project to build a 5-axis desktop manipulator from scratch. The main motivation was hands-on learning of forward and inverse kinematics.",
-    },
-    how: {
-      photo: "/images/projects/desktop-arm/how.png",
-      text: "Designed in Autodesk Fusion 360. All structural parts are 3D-printed. Control runs on Arduino with servo motors at each joint.",
-    },
-    result: {
-      photo: "/images/projects/desktop-arm/result.jpeg",
-      text: "An operational manipulator capable of picking and placing lightweight objects. Can be controlled from a computer or via joysticks. I built it in my first year, so for that time I consider it a full success.",
-    },
-  },
-  {
     isOther: true,
     title: "Other Projects",
     photo: "",
@@ -175,6 +190,12 @@ export const projects = [
 // and list them in the images array - they cycle automatically every 4 s.
 // Drop images into public/images/projects/other/<imageDir>/ - they are picked up automatically.
 export const otherProjects = [
+  {
+    title: "Desktop Robotic Arm",
+    videoSrc: "/images/projects/desktop-arm/cover.mp4",
+    description:
+      "A personal project to build a 5-axis desktop manipulator from scratch as a hands-on introduction to forward and inverse kinematics. Designed in Autodesk Fusion 360, fully 3D-printed, with servo motors at each joint. Operational and capable of picking and placing lightweight objects - controlled from a computer or via joysticks.",
+  },
   {
     title: "Smart Greenhouse",
     imageDir: "/images/projects/other/smart-greenhouse",

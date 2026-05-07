@@ -26,6 +26,8 @@ dist-ssr
 # Claude AI
 .claude/
 CLAUDE.md
+ARCHITECTURE.md
+IMAGES.md
 
 # Working files
 content_dump.txt

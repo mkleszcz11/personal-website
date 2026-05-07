@@ -38,10 +38,10 @@ for (const path of Object.keys(_coverGlob)) {
 }
 
 function getProjectCover(project) {
-  if (project.what?.photo) {
-    const dir = project.what.photo.split('/').slice(0, -1).join('/')
-    if (projectCoverByDir[dir]) return projectCoverByDir[dir]
-  }
+  const dir = project.coverDir || (project.what?.photo
+    ? project.what.photo.split('/').slice(0, -1).join('/')
+    : null)
+  if (dir && projectCoverByDir[dir]) return projectCoverByDir[dir]
   return null
 }
 
@@ -279,11 +279,137 @@ function ExpansionPanel({ project, onImageClick }) {
   )
 }
 
+function NarrativePanel({ project, onImageClick }) {
+  const hasLinks = project.links && project.links.length > 0
+  return (
+    <div
+      className="w-full rounded-2xl p-8"
+      style={{
+        backgroundColor: 'var(--color-surface)',
+        border: '1px solid var(--color-border)',
+      }}
+    >
+      <h3 className="font-semibold text-base mb-6" style={{ color: 'var(--color-text-primary)' }}>
+        {project.title}
+      </h3>
+      <div className="flex flex-col gap-8 max-w-3xl mx-auto">
+        {project.sections.map((section, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            {section.heading && (
+              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--color-text-secondary)' }}>
+                {section.heading}
+              </p>
+            )}
+            {section.text && (
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-primary)' }}>
+                {section.text}
+              </p>
+            )}
+            {section.items && (
+              <ul className="flex flex-col gap-1.5">
+                {section.items.map((item, j) => (
+                  <li key={j} className="text-sm leading-relaxed flex gap-2" style={{ color: 'var(--color-text-primary)' }}>
+                    <span style={{ color: 'var(--color-text-secondary)', flexShrink: 0 }}>—</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+            {section.image && (
+              <div
+                className="flex justify-center mt-1 cursor-zoom-in"
+                onClick={() => onImageClick(section.image, section.heading)}
+              >
+                <img
+                  src={section.image}
+                  alt={section.heading}
+                  className="rounded-xl"
+                  style={{ maxWidth: '100%', maxHeight: '420px', objectFit: 'contain' }}
+                  loading="lazy"
+                />
+              </div>
+            )}
+            {section.video && (
+              <div className="flex justify-center mt-1">
+                <CoverMedia
+                  src={section.video}
+                  alt={section.heading || project.title}
+                  className="rounded-xl"
+                  style={{ maxWidth: '100%', maxHeight: '420px' }}
+                  lazy
+                />
+              </div>
+            )}
+            {section.twoColumn && (
+              <div className="grid grid-cols-2 gap-6">
+                {section.twoColumn.map((col, ci) => (
+                  <div key={ci} className="flex flex-col gap-3">
+                    {col.heading && (
+                      <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--color-text-secondary)' }}>
+                        {col.heading}
+                      </p>
+                    )}
+                    {col.image && (
+                      <div
+                        className="flex justify-center mt-1 cursor-zoom-in"
+                        onClick={() => onImageClick(col.image, col.heading)}
+                      >
+                        <img
+                          src={col.image}
+                          alt={col.heading}
+                          className="rounded-xl"
+                          style={{ maxWidth: '100%', maxHeight: '420px', objectFit: 'contain' }}
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {hasLinks && (
+        <div className="flex flex-wrap gap-3 mt-8 pt-5 max-w-3xl mx-auto" style={{ borderTop: '1px solid var(--color-border)' }}>
+          {project.links.map((link) => (
+            <a
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors duration-150"
+              style={{
+                color: 'var(--color-text-secondary)',
+                border: '1px solid var(--color-border)',
+                backgroundColor: 'var(--color-background)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-text-primary)'
+                e.currentTarget.style.borderColor = 'var(--color-text-primary)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--color-text-secondary)'
+                e.currentTarget.style.borderColor = 'var(--color-border)'
+              }}
+            >
+              <ExternalLink size={13} />
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 function OtherProjectRow({ project, onImageClick }) {
   const images = otherImagesByDir[project.imageDir] || []
   const [imgIndex, setImgIndex] = useState(0)
   const [prevIndex, setPrevIndex] = useState(null)
   const [direction, setDirection] = useState('next')
+  const videoRef = useRef(null)
 
   const goTo = useCallback((newIndex, dir = 'next') => {
     setDirection(dir)
@@ -305,6 +431,20 @@ function OtherProjectRow({ project, onImageClick }) {
     return () => clearInterval(interval)
   }, [images.length, imgIndex, goTo])
 
+  useEffect(() => {
+      const video = videoRef.current
+      if (!video) return
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) video.play().catch(() => {})
+          else video.pause()
+        },
+        { threshold: 0.1 }
+      )
+      observer.observe(video)
+      return () => observer.disconnect()
+    }, [])
+
   const handlePrev = (e) => {
     e.stopPropagation()
     goTo((imgIndex - 1 + images.length) % images.length, 'prev')
@@ -320,12 +460,22 @@ function OtherProjectRow({ project, onImageClick }) {
       className="flex gap-6 rounded-xl p-4"
       style={{ border: '1px solid var(--color-border)', backgroundColor: 'var(--color-background)' }}
     >
-      {/* Image area */}
+      {/* Media area */}
       <div
         className="relative shrink-0 rounded-lg overflow-hidden flex items-center justify-center"
         style={{ width: '240px', height: '165px', backgroundColor: 'var(--color-border)' }}
       >
-        {images.length > 0 && (
+        {project.videoSrc ? (
+          <video
+            ref={videoRef}
+            src={project.videoSrc}
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full"
+            style={{ objectFit: 'cover' }}
+          />
+        ) : images.length > 0 && (
           <>
             {prevIndex !== null && (
               <img
@@ -352,7 +502,7 @@ function OtherProjectRow({ project, onImageClick }) {
             />
           </>
         )}
-        {images.length > 1 && (
+        {!project.videoSrc && images.length > 1 && (
           <>
             <button
               onClick={handlePrev}
@@ -454,9 +604,22 @@ export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(null)
   const [lightbox, setLightbox] = useState(null)
   const cols = useColumns()
+  const containerRef = useRef(null)
 
   const openLightbox = useCallback((src, alt) => setLightbox({ src, alt }), [])
   const closeLightbox = useCallback(() => setLightbox(null), [])
+
+  useEffect(() => {
+    if (activeIndex === null) return
+    const handleClickOutside = (e) => {
+      if (lightbox) return
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setActiveIndex(null)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [activeIndex, lightbox])
 
   const rows = []
   for (let i = 0; i < projects.length; i += cols) {
@@ -470,7 +633,7 @@ export default function Projects() {
   return (
     <section id="projects" className="py-24">
       {lightbox && <Lightbox src={lightbox.src} alt={lightbox.alt} onClose={closeLightbox} />}
-      <div className="max-w-6xl mx-auto px-6">
+      <div ref={containerRef} className="max-w-6xl mx-auto px-6">
         <h2 className="text-3xl font-bold mb-10" style={{ color: 'var(--color-text-primary)' }}>
           Projects
         </h2>
@@ -501,6 +664,8 @@ export default function Projects() {
                 {activeProject && (
                   activeProject.isOther
                     ? <OtherProjectsList onImageClick={openLightbox} />
+                    : activeProject.isNarrative
+                    ? <NarrativePanel project={activeProject} onImageClick={openLightbox} />
                     : <ExpansionPanel project={activeProject} onImageClick={openLightbox} />
                 )}
               </div>
