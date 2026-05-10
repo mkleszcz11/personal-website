@@ -77,40 +77,21 @@ export const projects = [
     ],
   },
   {
-    title: "Reward Shaping for Manipulation",
-    photo: "",
+    title: "SO-101 Bin Sorting",
+    coverDir: "/images/projects/so-101-bin-sorting",
     shortDescription:
-      "Comparing reward formulations for a pick-and-place task using Soft Actor-Critic with Hindsight Experience Replay.",
-    what: {
-      photo: "/images/projects/reward-shaping/what.png",
-      text: "Part of a broader deep dive into RL for manipulation. Used a pick-and-place task as a testbed to compare reward formulations and understand how SAC with HER works in practice.",
-    },
-    how: {
-      photo: "/images/projects/reward-shaping/how.png",
-      text: "Three reward setups - sparse, dense, and staged - trained using SAC+HER in Stable-Baselines3, with MuJoCo and gymnasium-robotics. Potential-based shaping was partially explored but ran into environment constraints with HER relabeling.",
-    },
-    result: {
-      photo: "/images/projects/reward-shaping/result.png",
-      text: "Sparse and dense both settled around 15% - the policy learned to slide the block rather than grasp it, which accidentally works for on-table goals. Staged reward reached 85% at 1M steps and above 95% after resuming with adjusted hyperparameters.",
-    },
-  },
-  {
-    title: "NNE/DTU RoboTech Challenge",
-    photo: "",
-    shortDescription:
-      "A 2-week industry challenge to build an autonomous sorting and inspection robot for a pharmaceutical production line - 3rd place finish.",
-    what: {
-      photo: "/images/projects/robotech-challenge/what.png",
-      text: "A 2-week challenge organised by Novo Nordisk Engineering and the Technical University of Denmark. The task was to set up a robot for autonomous sorting and inspection of cartridges in tubs, in conditions representative of a real pharmaceutical production environment.",
-    },
-    how: {
-      photo: "/images/projects/robotech-challenge/how.png",
-      text: "Used a UR3e collaborative robot for the sorting tasks, a SICK code reader and inspection camera for quality control, and a Siemens Simatic S7-1500 PLC as the main controller.",
-    },
-    result: {
-      photo: "/images/projects/robotech-challenge/result.png",
-      text: "Finished 3rd place with the \"Kernel Panic\" team. Gained hands-on experience with Universal Robots, SICK vision systems, and Siemens PLCs - and had a genuinely good time working alongside industry professionals.",
-    },
+      "[IN PROGRESS] Smol‑VLA and ACT for language‑conditioned bin sorting.",
+    isNarrative: true,
+    sections: [
+      {
+        heading: "Note",
+        text: "This project is currently in progress. Once the robot and I reach an agreement on how it should operate, I will share a full project description on Hugging Face and add a summary here.",
+      },
+      {
+        heading: "Goal",
+        text: "Build a language-conditioned bin-sorting artifact on the SO-101 arm, by collecting teleoperated demonstrations, training an ACT baseline locally, and deploying a cloud fine-tuned SmolVLA policy for real-world language generalization - e.g. 'put the yellow cube in the blue bin.'",
+      },
+    ],
   },
   {
     title: "Autonomous Trolley",
@@ -134,6 +115,24 @@ export const projects = [
     ],
   },
   {
+    title: "Reward Shaping for Manipulation",
+    photo: "",
+    shortDescription:
+      "Comparing reward formulations for a pick-and-place task using Soft Actor-Critic with Hindsight Experience Replay.",
+    what: {
+      photo: "/images/projects/reward-shaping/what.png",
+      text: "Part of a broader deep dive into RL for manipulation. Used a pick-and-place task as a testbed to compare reward formulations and understand how SAC with HER works in practice.",
+    },
+    how: {
+      photo: "/images/projects/reward-shaping/how.png",
+      text: "Three reward setups - sparse, dense, and staged - trained using SAC+HER in Stable-Baselines3, with MuJoCo and gymnasium-robotics. Potential-based shaping was partially explored but ran into environment constraints with HER relabeling.",
+    },
+    result: {
+      photo: "/images/projects/reward-shaping/result.png",
+      text: "Sparse and dense both settled around 15% - the policy learned to slide the block rather than grasp it, which accidentally works for on-table goals. Staged reward reached 85% at 1M steps and above 95% after resuming with adjusted hyperparameters.",
+    },
+  },
+  {
     title: "Electric Skateboard",
     photo: "",
     shortDescription:
@@ -155,26 +154,22 @@ export const projects = [
     // ],
   },
   {
-    title: "Tolerance Tracing and Compensation",
+    title: "NNE/DTU RoboTech Challenge",
     photo: "",
     shortDescription:
-      "Robotic Summer School final project - detecting and compensating manufacturing tolerance chains that disrupt robotic screwing operations, proposed by Danfoss.",
+      "A 2-week industry challenge to build an autonomous sorting and inspection robot for a pharmaceutical production line - 3rd place finish.",
     what: {
-      photo: "/images/projects/tolerance-tracing/what.png",
-      text: "Final project for the Robotics Summer School at SDU, proposed by Danfoss Drives. The problem: misalignments caused by tolerance chains in manufacturing that cause robotic screwing operations to fail. The goal was to detect and compensate for these deviations automatically.",
+      photo: "/images/projects/robotech-challenge/what.png",
+      text: "A 2-week challenge organised by Novo Nordisk Engineering and the Technical University of Denmark. The task was to set up a robot for autonomous sorting and inspection of cartridges in tubs, in conditions representative of a real pharmaceutical production environment.",
     },
     how: {
-      photo: "/images/projects/tolerance-tracing/how.png",
-      text: "Two approaches were implemented and compared: classical computer vision and a Convolutional Neural Network (CNN). Both were tested and validated in a simulation environment that we also developed ourselves.",
+      photo: "/images/projects/robotech-challenge/how.png",
+      text: "Used a UR3e collaborative robot for the sorting tasks, a SICK code reader and inspection camera for quality control, and a Siemens Simatic S7-1500 PLC as the main controller.",
     },
     result: {
-      photo: "/images/projects/tolerance-tracing/result.jpg",
-      text: "The presentation was well received by the Danfoss team and sparked a genuine discussion about applicability in production. A rare chance to work directly with industry specialists on a current, real-world factory challenge.",
+      photo: "/images/projects/robotech-challenge/result.png",
+      text: "Finished 3rd place with the \"Kernel Panic\" team. Gained hands-on experience with Universal Robots, SICK vision systems, and Siemens PLCs - and had a genuinely good time working alongside industry professionals.",
     },
-    links: [
-      { label: "Detailed case description", url: "https://drive.google.com/file/d/17VOub7TUd3BYyBCMSyg1lwVAp_vk4YwQ/view?usp=sharing" },
-      { label: "Robotic Summer School webpage", url: "https://robotelite.sdu.dk/" },
-    ],
   },
   {
     isOther: true,
@@ -190,6 +185,16 @@ export const projects = [
 // and list them in the images array - they cycle automatically every 4 s.
 // Drop images into public/images/projects/other/<imageDir>/ - they are picked up automatically.
 export const otherProjects = [
+  {
+    title: "Tolerance Tracing and Compensation",
+    videoSrc: "/images/projects/tolerance-tracing/cover.mp4",
+    description:
+      "Final project at the Robotics Summer School at SDU, proposed by Danfoss, focused on detecting and compensating manufacturing tolerance chains that cause robotic screwing failures. We used two approaches - classical computer vision and a CNN - both implemented and validated in a simulation environment. The results sparked a productive discussion with Danfoss engineers about real-world deployment in production.",
+    links: [
+      { label: "Detailed case description", url: "https://drive.google.com/file/d/17VOub7TUd3BYyBCMSyg1lwVAp_vk4YwQ/view?usp=sharing" },
+      { label: "Robotic Summer School webpage", url: "https://robotelite.sdu.dk/" },
+    ],
+  },
   {
     title: "Desktop Robotic Arm",
     videoSrc: "/images/projects/desktop-arm/cover.mp4",
